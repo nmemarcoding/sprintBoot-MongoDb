@@ -15,5 +15,9 @@ public interface UserRepository extends MongoRepository<User, String>{
     @Query("{}")
     Optional<User> findAllUsers();
 
+    // find by id
+    @Query("{'id' : ?0}")
+    Optional<User> findById(String id);
+
     
 }
