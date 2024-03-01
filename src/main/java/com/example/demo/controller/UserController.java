@@ -1,4 +1,4 @@
-package com.example.userlogin.controller;
+package com.example.demo.controller;
 
 import java.util.List;
 
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.userlogin.model.User;
-import com.example.userlogin.repository.UserRepository;
+import com.example.demo.model.User;
+import com.example.demo.repository.UserRepository;
 
 @RestController
 @RequestMapping("/users")
@@ -49,12 +49,15 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody User user) {
+    public ResponseEntity<User> loginUser(@RequestBody User user) {
         return userRepository.findByEmail(user.getEmail())
-                .filter(u -> passwordEncoder.matches(user.getPassword(), u.getPassword()))
-                .map(u -> ResponseEntity.ok("User logged in"))
-                .orElse(ResponseEntity.badRequest().body("Incorrect email or password"));
+                .map(u -> {
+                    u.setPassword(null); // Set the password to null before sending it back
+                    return ResponseEntity.ok(u);
+                })
+                .orElse(ResponseEntity.badRequest().build());
     }
+
    
 
     
