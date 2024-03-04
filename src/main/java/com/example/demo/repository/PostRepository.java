@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -18,7 +19,8 @@ public interface PostRepository extends MongoRepository<Post, String>{
 
     // find buy user serach on title or content
     @Query("{'$or':[ {'title': {$regex: ?0, $options: 'i'}}, {'content': {$regex: ?0, $options: 'i'}}]}")
-    Optional<Post> findByTitleOrContent(String search);
+    List<Post> findByTitleOrContent(String search);
+
 
     // save post
   
