@@ -1,5 +1,10 @@
 package com.example.demo.controller;
 
+
+import java.util.Optional;
+
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +15,7 @@ import com.example.demo.model.Post;
 import com.example.demo.model.User;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.config.ErrorResponse;
 
 @RestController
 @RequestMapping("/posts")
@@ -24,15 +30,28 @@ public class PostController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createPost(@RequestBody Post post) {
-        // Find the user by ID using the UserRepository
-        return userRepository.findById(post.getAuthorId())
-                .map(user -> {
-                    // If user is found, save the post
-                    Post savedPost = postRepository.save(post);
-                    return ResponseEntity.ok(savedPost);
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build()); // If user not found, return 404 Not Found
-    }
+        Optional<User> author = userRepository.findById(post.getAuthorId());
+        if (!author.isPresent()) {
+            // Return a custom error response object
+            ErrorResponse errorResponse = new ErrorResponse("User not found");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+        
+        try {
+            postRepository.save(post);
+            // Return a standard success response
+            return ResponseEntity.ok(post);
+        } catch (Exception e) {
+            // Handle persistence errors
+            ErrorResponse errorResponse = new ErrorResponse("Error saving post: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+}
+
+
+
+
+
     @PostMapping("/search")
     public ResponseEntity<?> searchPost(@RequestBody String search) {
         return ResponseEntity.ok(postRepository.findByTitleOrContent(search));

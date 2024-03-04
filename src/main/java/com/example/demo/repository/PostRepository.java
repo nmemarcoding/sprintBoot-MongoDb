@@ -20,4 +20,6 @@ public interface PostRepository extends MongoRepository<Post, String>{
     @Query("{'$or':[ {'title': {$regex: ?0, $options: 'i'}}, {'content': {$regex: ?0, $options: 'i'}}]}")
     Optional<Post> findByTitleOrContent(String search);
 
+    // save post
+  
 }
