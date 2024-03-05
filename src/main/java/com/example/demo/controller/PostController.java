@@ -6,7 +6,9 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +43,7 @@ public class PostController {
         
         post.setAuthorFirstName(author.get().getFirstName());   
         post.setAuthorLastName(author.get().getLastName());
+        
 
 
         try {
@@ -92,7 +95,7 @@ public class PostController {
             // Update fields as necessary. Avoid overwriting non-specified fields.
             if (modifiedPost.getTitle() != null) existingPost.setTitle(modifiedPost.getTitle());
             if (modifiedPost.getContent() != null) existingPost.setContent(modifiedPost.getContent());
-            if (modifiedPost.getAuthorId() != null) existingPost.setAuthorId(modifiedPost.getAuthorId());
+            if (modifiedPost.getAuthorId() != null) existingPost.setAuthorId(modifiedPost.getAuthorId()); 
             // Since authorFirstName and authorLastName are likely not to be changed in a modify operation,
             // they are not updated here. If you need to update them, include similar checks and updates.
             // Do not update createdDate as it should remain the date when the post was initially created.
@@ -106,5 +109,31 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
+    // delete post by id
+    @DeleteMapping("delete/{pistId}")
+    public ResponseEntity<?> deletePost(@PathVariable String id) {
+
+        if (id == null) {
+            ErrorResponse errorResponse = new ErrorResponse("The given id must not be null");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        try {
+            Optional<Post> postOptional = postRepository.findById(id);
+            if (!postOptional.isPresent()) {
+                ErrorResponse errorResponse = new ErrorResponse("Post not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+            }
+    
+            postRepository.deleteById(id);
+            return ResponseEntity.ok().body(new ErrorResponse("Post successfully deleted"));
+        } catch (Exception e) {
+            ErrorResponse errorResponse = new ErrorResponse("Error deleting post: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+    
+
     
 }

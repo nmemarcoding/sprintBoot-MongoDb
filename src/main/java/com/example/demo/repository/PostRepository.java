@@ -22,6 +22,6 @@ public interface PostRepository extends MongoRepository<Post, String>{
     List<Post> findByTitleOrContent(String search);
 
 
-    // save post
+    
   
 }
