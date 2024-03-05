@@ -41,7 +41,7 @@ public class PostController {
         
         post.setAuthorFirstName(author.get().getFirstName());   
         post.setAuthorLastName(author.get().getLastName());
-        
+
 
         try {
             postRepository.save(post);
@@ -69,8 +69,42 @@ public class PostController {
     }
 
     @PostMapping("/user")
-
     public ResponseEntity<?> getPostsByUser(@RequestBody String authorId) {
         return ResponseEntity.ok(postRepository.findByAuthorId(authorId));
     }
+
+    // modify post by id
+    @PostMapping("/modify")
+    public ResponseEntity<?> modifyPost(@RequestBody Post modifiedPost) {
+        if (modifiedPost.getId() == null) {
+            ErrorResponse errorResponse = new ErrorResponse("The given id must not be null");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        try {
+            Optional<Post> postOptional = postRepository.findById(modifiedPost.getId());
+            if (!postOptional.isPresent()) {
+                ErrorResponse errorResponse = new ErrorResponse("Post not found");
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+
+            Post existingPost = postOptional.get();
+            // Update fields as necessary. Avoid overwriting non-specified fields.
+            if (modifiedPost.getTitle() != null) existingPost.setTitle(modifiedPost.getTitle());
+            if (modifiedPost.getContent() != null) existingPost.setContent(modifiedPost.getContent());
+            if (modifiedPost.getAuthorId() != null) existingPost.setAuthorId(modifiedPost.getAuthorId());
+            // Since authorFirstName and authorLastName are likely not to be changed in a modify operation,
+            // they are not updated here. If you need to update them, include similar checks and updates.
+            // Do not update createdDate as it should remain the date when the post was initially created.
+            // lastModifiedDate is automatically updated by Spring Data's auditing feature if it's configured correctly.
+
+            // Save the updated entity
+            Post updatedPost = postRepository.save(existingPost);
+            return ResponseEntity.ok(updatedPost);
+        } catch (Exception e) {
+            ErrorResponse errorResponse = new ErrorResponse("Error modifying post: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+    
 }
