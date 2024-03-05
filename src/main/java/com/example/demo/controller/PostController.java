@@ -111,7 +111,7 @@ public class PostController {
     }
 
     // delete post by id
-    @DeleteMapping("delete/{pistId}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deletePost(@PathVariable String id) {
 
         if (id == null) {
