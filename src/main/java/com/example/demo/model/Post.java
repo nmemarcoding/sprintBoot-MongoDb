@@ -14,21 +14,28 @@ public class Post {
     private String title;
     private String content;
     private String authorId;
+    private String authorFirstName; // Added author first name
+    private String authorLastName;  // Added author last name
     @CreatedDate
     private LocalDateTime createdDate;
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
 
+    // Default constructor
     public Post() {
     }
 
-    public Post(String id, String title, String content, String authorId) {
+    // Constructor with all fields
+    public Post(String id, String title, String content, String authorId, String authorFirstName, String authorLastName) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.authorId = authorId;
+        this.authorFirstName = authorFirstName;
+        this.authorLastName = authorLastName;
     }
 
+    // Getters and setters
     public String getId() {
         return id;
     }
@@ -61,6 +68,22 @@ public class Post {
         this.authorId = authorId;
     }
 
+    public String getAuthorFirstName() {
+        return authorFirstName;
+    }
+
+    public void setAuthorFirstName(String authorFirstName) {
+        this.authorFirstName = authorFirstName;
+    }
+
+    public String getAuthorLastName() {
+        return authorLastName;
+    }
+
+    public void setAuthorLastName(String authorLastName) {
+        this.authorLastName = authorLastName;
+    }
+
     public LocalDateTime getCreatedDate() {
         return createdDate;
     }
@@ -77,8 +100,11 @@ public class Post {
         this.lastModifiedDate = lastModifiedDate;
     }
 
+    // Override toString() method
     @Override
     public String toString() {
-        return "Post [id=" + id + ", title=" + title + ", content=" + content + ", authorId=" + authorId + ", createdDate=" + createdDate + ", lastModifiedDate=" + lastModifiedDate + "]";
+        return "Post [id=" + id + ", title=" + title + ", content=" + content + ", authorId=" + authorId
+                + ", authorFirstName=" + authorFirstName + ", authorLastName=" + authorLastName
+                + ", createdDate=" + createdDate + ", lastModifiedDate=" + lastModifiedDate + "]";
     }
 }

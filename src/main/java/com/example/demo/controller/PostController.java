@@ -39,6 +39,10 @@ public class PostController {
             return ResponseEntity.badRequest().body(errorResponse);
         }
         
+        post.setAuthorFirstName(author.get().getFirstName());   
+        post.setAuthorLastName(author.get().getLastName());
+        
+
         try {
             postRepository.save(post);
             // Return a standard success response
@@ -59,7 +63,7 @@ public class PostController {
         return ResponseEntity.ok(postRepository.findByTitleOrContent(search));
     }
 
-    @PostMapping("/all")
+    @GetMapping("/all")
     public ResponseEntity<?> getAllPosts() {
         return ResponseEntity.ok(postRepository.findAll());
     }
