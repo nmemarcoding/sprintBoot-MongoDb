@@ -13,8 +13,10 @@ public class Comment {
     @Id
     private String id;
     private String text;
-    private String author;
+    private String authorId;
     private String postId;
+    private String authorFirstName; // Added author first name
+    private String authorLastName;  // Added author last name
     
     @CreatedDate
     private LocalDateTime createdDate;
@@ -25,11 +27,13 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(String id, String text, String author, String postId) {
+    public Comment(String id, String text, String authorId, String postId, String authorFirstName, String authorLastName) {
         this.id = id;
         this.text = text;
-        this.author = author;
+        this.authorId = authorId;
         this.postId = postId;
+        this.authorFirstName = authorFirstName;
+        this.authorLastName = authorLastName;
     }
 
     public String getId() {
@@ -48,12 +52,12 @@ public class Comment {
         this.text = text;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getAuthorId() {
+        return authorId;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
     }
 
     public String getPostId() {
@@ -80,12 +84,28 @@ public class Comment {
         this.lastModifiedDate = lastModifiedDate;
     }
 
+    public String getAuthorFirstName() {
+        return authorFirstName;
+    }
+
+    public void setAuthorFirstName(String authorFirstName) {
+        this.authorFirstName = authorFirstName;
+    }
+
+    public String getAuthorLastName() {
+        return authorLastName;
+    }
+
+    public void setAuthorLastName(String authorLastName) {
+        this.authorLastName = authorLastName;
+    }
+
     @Override
     public String toString() {
         return "Comment{" +
                 "id='" + id + '\'' +
                 ", text='" + text + '\'' +
-                ", author='" + author + '\'' +
+                ", authorId='" + authorId + '\'' +
                 ", postId='" + postId + '\'' +
                 ", createdDate=" + createdDate +
                 ", lastModifiedDate=" + lastModifiedDate +
