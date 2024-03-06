@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,6 +68,28 @@ public class CommentController {
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
-    
+
+    // route to get comments by post id
+    @GetMapping("/getByPostId/{postId}")
+    public ResponseEntity<?> getCommentsByPostId(@PathVariable String postId) {
+        if(postId == null) {
+            ErrorResponse errorResponse = new ErrorResponse("Post id is required");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        Optional<Post> post = postRepository.findById(postId);
+        if (!post.isPresent()) {
+            ErrorResponse errorResponse = new ErrorResponse("Post not found");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        try {
+            return ResponseEntity.ok(commentRepository.findByPostId(postId));
+        } catch (Exception e) {
+            ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
+
     
 }
