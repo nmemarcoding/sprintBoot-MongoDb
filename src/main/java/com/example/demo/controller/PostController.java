@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Post;
 import com.example.demo.model.User;
+import com.example.demo.repository.CommentRepository;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.config.ErrorResponse;
@@ -26,10 +27,12 @@ import com.example.demo.config.ErrorResponse;
 public class PostController {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
-    public PostController(PostRepository postRepository, UserRepository UserRepository) {
+    public PostController(PostRepository postRepository, UserRepository UserRepository, CommentRepository commentRepository) {
         this.postRepository = postRepository;
         this.userRepository = UserRepository;
+        this.commentRepository = commentRepository;
     }
 
     @PostMapping("/create")
@@ -127,6 +130,8 @@ public class PostController {
             }
     
             postRepository.deleteById(id);
+            // delete all comments for the post
+            commentRepository.deleteByPostId(postOptional.get().getId());
             return ResponseEntity.ok().body(new ErrorResponse("Post successfully deleted"));
         } catch (Exception e) {
             ErrorResponse errorResponse = new ErrorResponse("Error deleting post: " + e.getMessage());

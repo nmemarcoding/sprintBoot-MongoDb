@@ -14,4 +14,7 @@ public interface CommentRepository extends MongoRepository<Comment, String>{
     @Query("{'postId' : ?0}")
     List<Comment> findByPostId(String postId);
 
+    //  delete all comments for the post
+    void deleteByPostId(String postId);
+
 }
